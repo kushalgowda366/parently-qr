@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Parently – Child Safety QR Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #3c3c3c;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0 20px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #qrcode {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Section -->
+  <div class="container" id="loginSection">
+    <h1>Parently Login</h1>
+    <input type="email" id="userEmail" placeholder="Enter your email" required />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- Form Section -->
+  <div class="container hidden" id="formSection">
+    <h1>Enter Child & Parent Info</h1>
+    <form id="infoForm" onsubmit="event.preventDefault(); generateQRCode();">
+      <input type="text" id="parentName" placeholder="Parent's Name" required />
+      <input type="tel" id="phone" placeholder="Phone Number" pattern="\d{10}" title="Enter a 10-digit phone number" required />
+      <input type="text" id="address" placeholder="Address" required />
+      
+      <select id="state" required>
+        <option value="">Select State</option>
+        <option value="Andhra Pradesh">Andhra Pradesh</option>
+        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+        <option value="Assam">Assam</option>
+        <option value="Bihar">Bihar</option>
+        <option value="Chhattisgarh">Chhattisgarh</option>
+        <option value="Goa">Goa</option>
+        <option value="Gujarat">Gujarat</option>
+        <option value="Haryana">Haryana</option>
+        <option value="Himachal Pradesh">Himachal Pradesh</option>
+        <option value="Jharkhand">Jharkhand</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Kerala">Kerala</option>
+        <option value="Madhya Pradesh">Madhya Pradesh</option>
+        <option value="Maharashtra">Maharashtra</option>
+        <option value="Manipur">Manipur</option>
+        <option value="Meghalaya">Meghalaya</option>
+        <option value="Mizoram">Mizoram</option>
+        <option value="Nagaland">Nagaland</option>
+        <option value="Odisha">Odisha</option>
+        <option value="Punjab">Punjab</option>
+        <option value="Rajasthan">Rajasthan</option>
+        <option value="Sikkim">Sikkim</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option value="Telangana">Telangana</option>
+        <option value="Tripura">Tripura</option>
+        <option value="Uttar Pradesh">Uttar Pradesh</option>
+        <option value="Uttarakhand">Uttarakhand</option>
+        <option value="West Bengal">West Bengal</option>
+        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+        <option value="Chandigarh">Chandigarh</option>
+        <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+        <option value="Ladakh">Ladakh</option>
+        <option value="Lakshadweep">Lakshadweep</option>
+        <option value="Puducherry">Puducherry</option>
+      </select>
+
+      <input type="text" id="district" placeholder="District" required />
+      <input type="text" id="childName" placeholder="Child's Name" required />
+      <input type="number" id="age" placeholder="Child's Age" required />
+      <button type="submit">Generate QR Code</button>
+      <button type="button" onclick="clearForm()">Clear</button>
+    </form>
+    <div id="qrcode"></div>
+    <p id="qrLabel" class="hidden">Scan this QR code for emergency contact info.</p>
+    <button class="hidden" id="downloadBtn" onclick="downloadQRCode()">Download QR Code</button>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("userEmail").value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      document.getElementById("loginSection").classList.add("hidden");
+      document.getElementById("formSection").classList.remove("hidden");
+    }
+
+    function generateQRCode() {
+      const parentName = document.getElementById("parentName").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const state = document.getElementById("state").value.trim();
+      const district = document.getElementById("district").value.trim();
+      const childName = document.getElementById("childName").value.trim();
+      const age = document.getElementById("age").value.trim();
+
+      if (!parentName || !phone || !address || !state || !district || !childName || !age) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      const data = `Parent Name: ${parentName}
+Phone: ${phone}
+Address: ${address}
+State: ${state}
+District: ${district}
+Child Name: ${childName}
+Age: ${age}`;
+
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: data,
+        width: 200,
+        height: 200,
+      });
+
+      document.getElementById("downloadBtn").classList.remove("hidden");
+      document.getElementById("qrLabel").classList.remove("hidden");
+    }
+
+    function clearForm() {
+      document.getElementById("infoForm").reset();
+      document.getElementById("qrcode").innerHTML = "";
+      document.getElementById("downloadBtn").classList.add("hidden");
+      document.getElementById("qrLabel").classList.add("hidden");
+    }
+
+    function downloadQRCode() {
+      const canvas = document.querySelector("#qrcode canvas");
+      if (!canvas) {
+        alert("Please generate the QR code first.");
+        return;
+      }
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = "parently_qrcode.png";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
