@@ -149,19 +149,24 @@
         return;
       }
 
-      const data = `Parent Name: ${parentName}
-Phone: ${phone}
-Address: ${address}
-State: ${state}
-District: ${district}
-Child Name: ${childName}
-Age: ${age}`;
+      // CHANGE THIS to your real hosted view.html location
+      const baseUrl = "https://yourdomain.com/view.html"; // e.g., "https://yourapp.netlify.app/view.html"
+
+      const query = new URLSearchParams({
+        parentName,
+        phone,
+        address: `${address}, ${district}, ${state}`,
+        childName,
+        age
+      }).toString();
+
+      const fullUrl = `${baseUrl}?${query}`;
 
       document.getElementById("qrcode").innerHTML = "";
       new QRCode(document.getElementById("qrcode"), {
-        text: data,
+        text: fullUrl,
         width: 200,
-        height: 200,
+        height: 200
       });
 
       document.getElementById("downloadBtn").classList.remove("hidden");
