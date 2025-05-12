@@ -25,6 +25,9 @@
       margin-right: auto;
       text-align: left;
     }
+    .label {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -32,36 +35,45 @@
   <h2>Child Info Access</h2>
   <div class="info-box" id="infoBox">
     <h3>Child Safety Information</h3>
-    <p id="messageText"></p>
+    <p><span class="label">Child Name:</span> <span id="childName"></span></p>
+    <p><span class="label">Age:</span> <span id="age"></span></p>
+    <p><span class="label">Parent Name:</span> <span id="parentName"></span></p>
+    <p><span class="label">Phone:</span> <span id="phone"></span></p>
+    <p><span class="label">Address:</span> <span id="address"></span></p>
+    <p><span class="label">District:</span> <span id="district"></span></p>
+    <p><span class="label">State:</span> <span id="state"></span></p>
   </div>
 
   <script>
-    // Extract URL parameters from the query string
     const params = new URLSearchParams(window.location.search);
     const parentName = params.get("parentName") || "Unknown Parent";
     const phone = params.get("phone") || "Not Available";
     const address = params.get("address") || "Not Available";
-    const state = params.get("state") || "Not Available";
-    const district = params.get("district") || "Not Available";
     const childName = params.get("childName") || "Unknown Child";
     const age = params.get("age") || "Unknown Age";
 
-    // Display the extracted data
-    const box = document.getElementById("infoBox");
-    const msg = document.getElementById("messageText");
+    // Extract state and district from address if not passed individually
+    let state = params.get("state");
+    let district = params.get("district");
 
-    msg.innerHTML = ` 
-      <strong>Child Name:</strong> ${childName}<br>
-      <strong>Age:</strong> ${age}<br>
-      <strong>Parent Name:</strong> ${parentName}<br>
-      <strong>Phone:</strong> ${phone}<br>
-      <strong>Address:</strong> ${address}<br>
-      <strong>State:</strong> ${state}<br>
-      <strong>District:</strong> ${district}<br>
-    `;
+    if (!state || !district) {
+      // If full address string is given, try to parse it
+      const parts = address.split(",");
+      district = district || parts[parts.length - 2]?.trim() || "Unknown District";
+      state = state || parts[parts.length - 1]?.trim() || "Unknown State";
+    }
 
-    // Show the info box with the data
-    box.style.display = "block";
+    // Set content
+    document.getElementById("childName").textContent = childName;
+    document.getElementById("age").textContent = age;
+    document.getElementById("parentName").textContent = parentName;
+    document.getElementById("phone").textContent = phone;
+    document.getElementById("address").textContent = address;
+    document.getElementById("district").textContent = district;
+    document.getElementById("state").textContent = state;
+
+    // Show info box
+    document.getElementById("infoBox").style.display = "block";
   </script>
 
 </body>
