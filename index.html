@@ -5,9 +5,6 @@
   <title>Parently – Child Safety QR Generator</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
       font-family: Arial, sans-serif;
       background: #f2f2f2;
@@ -57,15 +54,8 @@
 </head>
 <body>
 
-  <!-- Login Section -->
-  <div class="container" id="loginSection">
-    <h1>Parently Login</h1>
-    <input type="email" id="userEmail" placeholder="Enter your email" required />
-    <button onclick="login()">Login</button>
-  </div>
-
   <!-- Form Section -->
-  <div class="container hidden" id="formSection">
+  <div class="container" id="formSection">
     <h1>Enter Child & Parent Info</h1>
     <form id="infoForm" onsubmit="event.preventDefault(); generateQRCode();">
       <input type="text" id="parentName" placeholder="Parent's Name" required />
@@ -74,9 +64,43 @@
       
       <select id="state" required>
         <option value="">Select State</option>
-        <option value="Andhra Pradesh">Andhra Pradesh</option>
-        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-        <!-- Add all other states here -->
+        <!-- List of all Indian states and union territories -->
+        <option>Andhra Pradesh</option>
+        <option>Arunachal Pradesh</option>
+        <option>Assam</option>
+        <option>Bihar</option>
+        <option>Chhattisgarh</option>
+        <option>Goa</option>
+        <option>Gujarat</option>
+        <option>Haryana</option>
+        <option>Himachal Pradesh</option>
+        <option>Jharkhand</option>
+        <option>Karnataka</option>
+        <option>Kerala</option>
+        <option>Madhya Pradesh</option>
+        <option>Maharashtra</option>
+        <option>Manipur</option>
+        <option>Meghalaya</option>
+        <option>Mizoram</option>
+        <option>Nagaland</option>
+        <option>Odisha</option>
+        <option>Punjab</option>
+        <option>Rajasthan</option>
+        <option>Sikkim</option>
+        <option>Tamil Nadu</option>
+        <option>Telangana</option>
+        <option>Tripura</option>
+        <option>Uttar Pradesh</option>
+        <option>Uttarakhand</option>
+        <option>West Bengal</option>
+        <option>Andaman and Nicobar Islands</option>
+        <option>Chandigarh</option>
+        <option>Dadra and Nagar Haveli and Daman and Diu</option>
+        <option>Delhi</option>
+        <option>Jammu and Kashmir</option>
+        <option>Ladakh</option>
+        <option>Lakshadweep</option>
+        <option>Puducherry</option>
       </select>
 
       <input type="text" id="district" placeholder="District" required />
@@ -85,39 +109,13 @@
       <button type="submit">Generate QR Code</button>
       <button type="button" onclick="clearForm()">Clear</button>
     </form>
+
     <div id="qrcode"></div>
     <p id="qrLabel" class="hidden">Scan this QR code for emergency contact info.</p>
     <button class="hidden" id="downloadBtn" onclick="downloadQRCode()">Download QR Code</button>
   </div>
 
   <script>
-    // Check if URL has parameters and skip login if true
-    const params = new URLSearchParams(window.location.search);
-    if (params.has("parentName")) {
-      document.getElementById("loginSection").classList.add("hidden");
-      document.getElementById("formSection").classList.remove("hidden");
-
-      // Pre-fill form fields with data from URL parameters
-      document.getElementById("parentName").value = params.get("parentName");
-      document.getElementById("phone").value = params.get("phone");
-      document.getElementById("address").value = params.get("address");
-      document.getElementById("state").value = params.get("state");
-      document.getElementById("district").value = params.get("district");
-      document.getElementById("childName").value = params.get("childName");
-      document.getElementById("age").value = params.get("age");
-    }
-
-    function login() {
-      const email = document.getElementById("userEmail").value.trim();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        alert("Please enter a valid email address.");
-        return;
-      }
-      document.getElementById("loginSection").classList.add("hidden");
-      document.getElementById("formSection").classList.remove("hidden");
-    }
-
     function generateQRCode() {
       const parentName = document.getElementById("parentName").value.trim();
       const phone = document.getElementById("phone").value.trim();
@@ -132,11 +130,15 @@
         return;
       }
 
-      const baseUrl = "https://kushalgowda366.github.io/parently-qr/view.html"; // Your hosted URL
+      // ✅ Your hosted view.html URL
+      const baseUrl = "https://kushalgowda366.github.io/parently-qr/view.html";
+
       const query = new URLSearchParams({
         parentName,
         phone,
-        address: `${address}, ${district}, ${state}`,
+        address,
+        district,
+        state,
         childName,
         age
       }).toString();
