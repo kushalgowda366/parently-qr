@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Child Info Access</title>
   <style>
-    body {
     
-        background-image: url('https://patnadps.com/images/cp.jpg');
-
+    body {
+      background-image: url();
+      
       font-family: Arial, sans-serif;
       background: #eef6fb;
       text-align: center;
@@ -15,6 +15,26 @@
     }
     h2 {
       margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    input[type="password"] {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      width: 250px;
     }
     .info-box {
       background-color: white;
@@ -28,23 +48,28 @@
       margin-right: auto;
       text-align: left;
     }
-    .label {
-      font-weight: bold;
+    #passwordSection {
+      display: none;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
 
-  <h2>Child Info Access</h2>
+  <h2>Select Your Role</h2>
+  <button onclick="handleRole('general')">I'm a General Viewer</button>
+  <button onclick="handleRole('police')">I'm a Police Officer</button>
+
+  <div id="passwordSection">
+    <p>Please enter the police password:</p>
+    <input type="password" id="policePassword" placeholder="Enter password" />
+    <br />
+    <button onclick="verifyPolice()">Submit</button>
+  </div>
+
   <div class="info-box" id="infoBox">
     <h3>Child Safety Information</h3>
-    <p><span class="label">Child Name:</span> <span id="childName"></span></p>
-    <p><span class="label">Age:</span> <span id="age"></span></p>
-    <p><span class="label">Parent Name:</span> <span id="parentName"></span></p>
-    <p><span class="label">Phone:</span> <span id="phone"></span></p>
-    <p><span class="label">Address:</span> <span id="address"></span></p>
-    <p><span class="label">District:</span> <span id="district"></span></p>
-    <p><span class="label">State:</span> <span id="state"></span></p>
+    <p id="messageText"></p>
   </div>
 
   <script>
@@ -55,28 +80,50 @@
     const childName = params.get("childName") || "Unknown Child";
     const age = params.get("age") || "Unknown Age";
 
-    // Extract state and district from address if not passed individually
-    let state = params.get("state");
-    let district = params.get("district");
+    const correctPolicePassword = "secure123"; // Change this password as needed
 
- if (!state || !district) {
-      // If full address string is given, try to parse it
-      const parts = address.split(",");
-      district = district || parts[parts.length - 2]?.trim() || "Unknown District";
-      state = state || parts[parts.length - 1]?.trim() || "Unknown State";
+    function handleRole(role) {
+      if (role === "general") {
+        showGeneralInfo();
+      } else if (role === "police") {
+        document.getElementById("passwordSection").style.display = "block";
+      }
     }
 
-    // Set content
-    document.getElementById("childName").textContent = childName;
-    document.getElementById("age").textContent = age;
-    document.getElementById("parentName").textContent = parentName;
-    document.getElementById("phone").textContent = phone;
-    document.getElementById("address").textContent = address;
-    document.getElementById("district").textContent = district;
-    document.getElementById("state").textContent = state;
+    function showGeneralInfo() {
+      const box = document.getElementById("infoBox");
+      const msg = document.getElementById("messageText");
 
-    // Show info box
-    document.getElementById("infoBox").style.display = "block";
+      msg.innerHTML = `
+        <strong>Child Name:</strong> ${childName}<br>
+        <strong>Parent Contact:</strong> ${phone}<br>
+      `;
+      box.style.display = "block";
+    }
+
+    function verifyPolice() {
+      const entered = document.getElementById("policePassword").value;
+      if (entered === correctPolicePassword) {
+        showPoliceInfo();
+      } else {
+        alert("Incorrect password. Access denied.");
+      }
+    }
+
+    function showPoliceInfo() {
+      const box = document.getElementById("infoBox");
+      const msg = document.getElementById("messageText");
+
+      msg.innerHTML = `
+        <strong>Child Name:</strong> ${childName}<br>
+        <strong>Age:</strong> ${age}<br>
+        <strong>Parent Name:</strong> ${parentName}<br>
+        <strong>Phone:</strong> ${phone}<br>
+        <strong>Address:</strong> ${address}<br>
+      `;
+      box.style.display = "block";
+      document.getElementById("passwordSection").style.display = "none";
+    }
   </script>
 
 </body>
