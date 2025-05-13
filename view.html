@@ -5,6 +5,9 @@
   <title>Child Info Access</title>
   <style>
     body {
+    
+        background-image: url('https://patnadps.com/images/cp.jpg');
+
       font-family: Arial, sans-serif;
       background: #eef6fb;
       text-align: center;
@@ -56,7 +59,7 @@
     let state = params.get("state");
     let district = params.get("district");
 
-    if (!state || !district) {
+ if (!state || !district) {
       // If full address string is given, try to parse it
       const parts = address.split(",");
       district = district || parts[parts.length - 2]?.trim() || "Unknown District";
